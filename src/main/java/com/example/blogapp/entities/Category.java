@@ -1,29 +1,32 @@
 package com.example.blogapp.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Entity
+@Table(name = "categories")
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
-
-@Entity
-@Table(name = "users")
-public class User {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Integer id;
-    private  String name;
-    private String email;
-    private String password;
-    private String about;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+
+    @Column(name = "title")
+    private String categoryTitle;
+
+    @Column(name = "description")
+    private String categoryDescription;
+  @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     private List<Post> posts= new ArrayList<>();
 
     public Integer getId() {
