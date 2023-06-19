@@ -1,5 +1,6 @@
 package com.example.blogapp.service;
 
+import com.example.blogapp.Dto.CategoryResponse;
 import com.example.blogapp.Dto.PostDto;
 import com.example.blogapp.Dto.PostResponse;
 import com.example.blogapp.Dto.UserResponse;
@@ -24,7 +25,7 @@ public interface PostService {
     PostDto getPostById(Integer id);
 
     //getAllPostByCategory
-    List<PostDto> getAllPostByCategory(Integer id);
+    CategoryResponse getAllPostByCategory(Integer id, Integer pageNumber, Integer pageSize);
 
     // getAllPostByUser
     UserResponse getAllPostByUser(Integer id,Integer pageNo, Integer pageSize);

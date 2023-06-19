@@ -1,5 +1,6 @@
 package com.example.blogapp.serviveImplementation;
 
+import com.example.blogapp.Dto.CategoryResponse;
 import com.example.blogapp.Dto.PostDto;
 import com.example.blogapp.Dto.PostResponse;
 import com.example.blogapp.Dto.UserResponse;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -93,11 +93,21 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPostByCategory(Integer id) {
-        Category cat=this.categoryRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("category","cat id", id));
-        List<Post> posts = postRepository.findByCategory(cat);
+    public CategoryResponse getAllPostByCategory(Integer id, Integer pageNumber, Integer pageSize) {
+
+        Pageable page = PageRequest.of(pageNumber, pageSize);
+        Category cat = this.categoryRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("category", "cat id", id));
+        Page<Post> pagePost = postRepository.findByCategory(cat, page);
+        List<Post> posts = pagePost.getContent();
         List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-        return postDtos;
+
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setContent(postDtos);
+        categoryResponse.setPageNumber(pagePost.getNumber());
+        categoryResponse.setLastPage(pagePost.isLast());
+        categoryResponse.setTotalElement(pagePost.getTotalElements());
+        categoryResponse.setTotalPages(pagePost.getTotalPages());
+        return categoryResponse;
     }
 
     @Override
