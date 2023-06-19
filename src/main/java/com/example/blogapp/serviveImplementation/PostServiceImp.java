@@ -11,6 +11,9 @@ import com.example.blogapp.exception.ResourceNotFoundException;
 import com.example.blogapp.service.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -64,8 +67,10 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<PostDto> allPost() {
-        List<Post>posts = postRepository.findAll();
+    public List<PostDto> allPost(Integer pageNumber,Integer pageSize) {
+        Pageable page= PageRequest.of(pageNumber, pageSize);
+        Page<Post> pagePost = postRepository.findAll(page);
+        List<Post> posts = pagePost.getContent();
         List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
         return postDtos;
     }

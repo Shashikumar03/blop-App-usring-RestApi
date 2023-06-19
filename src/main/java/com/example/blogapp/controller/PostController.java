@@ -31,29 +31,27 @@ public class PostController {
     public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto,
                                               @PathVariable Integer userId,
                                            @PathVariable Integer categoryId) {
-        System.out.println("shashi");
         PostDto createdPostDto = postServiceImp.createPost(postDto, userId, categoryId);
-        System.out.println("shasho");
         return new ResponseEntity<PostDto>(createdPostDto, HttpStatus.CREATED);
-
     }
     // get post by user
     @GetMapping("/user/{userId}/post")
     public ResponseEntity<List<PostDto>> getPodtByUser(@PathVariable Integer userId){
         List<PostDto> postDtos = postServiceImp.getAllPostByUser(userId);
         return new ResponseEntity<List<PostDto> >(postDtos,HttpStatus.OK);
-
     }
     @GetMapping("/category/{categoryId}/post")
     public ResponseEntity<List<PostDto>> getPostByCategory(@PathVariable Integer categoryId){
         List<PostDto> postDtos = postServiceImp.getAllPostByCategory(categoryId);
         return new ResponseEntity<List<PostDto> >(postDtos,HttpStatus.OK);
-
     }
     // getAllPost
     @GetMapping("/allPost")
-    public ResponseEntity<List<PostDto>>getAllPost(){
-        List<PostDto> postDtos = postServiceImp.allPost();
+    public ResponseEntity<List<PostDto>>getAllPost(
+            @RequestParam(value = "pageNumber",defaultValue = "1",required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize",defaultValue = "5",required = false)Integer pageSize){
+
+        List<PostDto> postDtos = postServiceImp.allPost(pageNumber, pageSize);
         return new ResponseEntity<List<PostDto> >(postDtos,HttpStatus.OK);
     }
     //get post by id
@@ -61,7 +59,6 @@ public class PostController {
     public ResponseEntity<PostDto>getPostById(@PathVariable Integer postId) {
         PostDto postDto = this.postServiceImp.getPostById(postId);
         return new ResponseEntity<PostDto>(postDto, HttpStatus.OK);
-
     }
     //delete post{
     @DeleteMapping("/posts/{postId}")
@@ -74,8 +71,6 @@ public class PostController {
     public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto, @PathVariable Integer postId){
         PostDto postDto1 = this.postServiceImp.updatePost(postDto,postId);
         return new ResponseEntity<PostDto>(postDto1,HttpStatus.OK);
-
-
     }
 
 }
