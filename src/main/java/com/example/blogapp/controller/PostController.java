@@ -2,6 +2,8 @@ package com.example.blogapp.controller;
 
 import com.example.blogapp.Dto.CategoryDto;
 import com.example.blogapp.Dto.PostDto;
+import com.example.blogapp.Dto.PostResponse;
+import com.example.blogapp.Dto.UserResponse;
 import com.example.blogapp.Repository.CategoryRepository;
 import com.example.blogapp.Repository.PostRepository;
 import com.example.blogapp.entities.Post;
@@ -36,9 +38,13 @@ public class PostController {
     }
     // get post by user
     @GetMapping("/user/{userId}/post")
-    public ResponseEntity<List<PostDto>> getPodtByUser(@PathVariable Integer userId){
-        List<PostDto> postDtos = postServiceImp.getAllPostByUser(userId);
-        return new ResponseEntity<List<PostDto> >(postDtos,HttpStatus.OK);
+    public ResponseEntity<UserResponse> getPodtByUser(
+            @PathVariable Integer userId,
+            @RequestParam(value = "pageNumber",defaultValue = "0",required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize",defaultValue = "3",required = false)Integer pageSize
+    ){
+        UserResponse allPostByUser = postServiceImp.getAllPostByUser(userId, pageNumber, pageSize);
+        return new ResponseEntity<UserResponse>(allPostByUser,HttpStatus.OK);
     }
     @GetMapping("/category/{categoryId}/post")
     public ResponseEntity<List<PostDto>> getPostByCategory(@PathVariable Integer categoryId){
@@ -47,12 +53,12 @@ public class PostController {
     }
     // getAllPost
     @GetMapping("/allPost")
-    public ResponseEntity<List<PostDto>>getAllPost(
-            @RequestParam(value = "pageNumber",defaultValue = "1",required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize",defaultValue = "5",required = false)Integer pageSize){
+    public ResponseEntity<PostResponse>getAllPost(
+            @RequestParam(value = "pageNumber",defaultValue = "0",required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize",defaultValue = "10",required = false)Integer pageSize){
 
-        List<PostDto> postDtos = postServiceImp.allPost(pageNumber, pageSize);
-        return new ResponseEntity<List<PostDto> >(postDtos,HttpStatus.OK);
+        PostResponse postResponse = postServiceImp.allPost(pageNumber, pageSize);
+        return new ResponseEntity<PostResponse>(postResponse,HttpStatus.OK);
     }
     //get post by id
     @GetMapping("/posts/{postId}")

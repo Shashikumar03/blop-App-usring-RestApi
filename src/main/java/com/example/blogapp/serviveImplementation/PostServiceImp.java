@@ -1,6 +1,8 @@
 package com.example.blogapp.serviveImplementation;
 
 import com.example.blogapp.Dto.PostDto;
+import com.example.blogapp.Dto.PostResponse;
+import com.example.blogapp.Dto.UserResponse;
 import com.example.blogapp.Repository.CategoryRepository;
 import com.example.blogapp.Repository.PostRepository;
 import com.example.blogapp.Repository.UserRepository;
@@ -67,12 +69,21 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<PostDto> allPost(Integer pageNumber,Integer pageSize) {
+    public PostResponse allPost(Integer pageNumber, Integer pageSize) {
         Pageable page= PageRequest.of(pageNumber, pageSize);
         Page<Post> pagePost = postRepository.findAll(page);
         List<Post> posts = pagePost.getContent();
-        List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-        return postDtos;
+        List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class))
+                .collect(Collectors.toList());
+
+        PostResponse postResponse= new PostResponse();
+        postResponse.setContent(postDtos);
+        postResponse.setPageNumber(pagePost.getNumber());
+        postResponse.setPageSize(pagePost.getSize());
+        postResponse.setTotalElement(pagePost.getNumberOfElements());
+        postResponse.setTotalPages(pagePost.getTotalPages());
+        postResponse.setLastPage(pagePost.isLast());
+        return postResponse;
     }
 
     @Override
@@ -90,11 +101,25 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPostByUser(Integer id) {
+    public UserResponse getAllPostByUser(Integer id,Integer pageNumber, Integer pageSize) {
+        Pageable page=PageRequest.of(pageNumber,pageSize);
+
         User user = this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("usr", "userId", id));
-        List<Post> posts = this.postRepository.findByUser(user);
+        Page<Post> userPost = this.postRepository.findByUser(user,page);
+
+        List<Post> posts = userPost.getContent();
         List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-        return  postDtos;
+
+        UserResponse userResponse= new UserResponse();
+        userResponse.setContent(postDtos);
+        userResponse.setTotalPages(userPost.getTotalPages());
+        userResponse.setLastPage(userPost.isLast());
+       // userResponse.setTotalElement();
+        userResponse.setPageSize(userPost.getSize());
+        userResponse.setPageNumber(userPost.getNumber());
+        userResponse.setTotalElement(userPost.getTotalElements());
+
+        return  userResponse;
     }
 
     @Override
