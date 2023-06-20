@@ -5,6 +5,7 @@ import com.example.blogapp.Dto.PostDto;
 import com.example.blogapp.Dto.PostResponse;
 import com.example.blogapp.Dto.UserResponse;
 import com.example.blogapp.Repository.PostRepository;
+import com.example.blogapp.config.AppConst;
 import com.example.blogapp.response.ApiResponse;
 import com.example.blogapp.serviveImplementation.CategoryServiceImp;
 import com.example.blogapp.serviveImplementation.PostServiceImp;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/")
@@ -36,8 +39,8 @@ public class PostController {
     @GetMapping("/user/{userId}/post")
     public ResponseEntity<UserResponse> getPodtByUser(
             @PathVariable Integer userId,
-            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "3", required = false) Integer pageSize
+            @RequestParam(value = "pageNumber", defaultValue = AppConst.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = AppConst.PAGE_SIZE, required = false) Integer pageSize
     ) {
         UserResponse allPostByUser = postServiceImp.getAllPostByUser(userId, pageNumber, pageSize);
         return new ResponseEntity<UserResponse>(allPostByUser, HttpStatus.OK);
@@ -46,8 +49,8 @@ public class PostController {
     @GetMapping("/category/{categoryId}/post")
     public ResponseEntity<CategoryResponse> getPostByCategory(
             @PathVariable Integer categoryId,
-            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
+            @RequestParam(value = "pageNumber", defaultValue = AppConst.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = AppConst.PAGE_SIZE, required = false) Integer pageSize) {
 
         CategoryResponse allPostByCategory = postServiceImp.getAllPostByCategory(categoryId, pageNumber, pageSize);
         return new ResponseEntity<CategoryResponse>(allPostByCategory, HttpStatus.OK);
@@ -56,10 +59,12 @@ public class PostController {
     // getAllPost
     @GetMapping("/allPost")
     public ResponseEntity<PostResponse> getAllPost(
-            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
+            @RequestParam(value = "pageNumber", defaultValue = AppConst.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = AppConst.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConst.SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConst.SORT_DIR, required = false) String sortDir) {
 
-        PostResponse postResponse = postServiceImp.allPost(pageNumber, pageSize);
+        PostResponse postResponse = postServiceImp.allPost(pageNumber, pageSize,sortBy,sortDir);
         return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
     }
 
@@ -80,6 +85,12 @@ public class PostController {
     public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto, @PathVariable Integer postId){
         PostDto postDto1 = this.postServiceImp.updatePost(postDto,postId);
         return new ResponseEntity<PostDto>(postDto1,HttpStatus.OK);
+    }
+    //searching
+    @GetMapping("/posts/search/{keywords}")
+    public ResponseEntity<List<PostDto>>searchPostBytitle(@PathVariable("keywords") String keywords ){
+        List<PostDto> postDtos = postServiceImp.searchPosts(keywords);
+        return new ResponseEntity<List<PostDto>>(postDtos,HttpStatus.OK);
     }
 
 }
