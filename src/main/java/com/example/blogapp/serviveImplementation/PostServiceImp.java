@@ -8,6 +8,7 @@ import com.example.blogapp.Repository.CategoryRepository;
 import com.example.blogapp.Repository.PostRepository;
 import com.example.blogapp.Repository.UserRepository;
 import com.example.blogapp.entities.Category;
+import com.example.blogapp.entities.Comment;
 import com.example.blogapp.entities.Post;
 import com.example.blogapp.entities.User;
 import com.example.blogapp.exception.ResourceNotFoundException;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -93,7 +95,8 @@ public class PostServiceImp implements PostService {
     @Override
     public PostDto getPostById(Integer id) {
         Post post = this.postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("post", "id", id));
-         return   this.modelMapper.map(post,PostDto.class);
+
+        return   this.modelMapper.map(post,PostDto.class);
     }
 
     @Override

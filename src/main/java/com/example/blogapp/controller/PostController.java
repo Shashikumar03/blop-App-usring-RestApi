@@ -1,11 +1,9 @@
 package com.example.blogapp.controller;
 
-import com.example.blogapp.Dto.CategoryResponse;
-import com.example.blogapp.Dto.PostDto;
-import com.example.blogapp.Dto.PostResponse;
-import com.example.blogapp.Dto.UserResponse;
+import com.example.blogapp.Dto.*;
 import com.example.blogapp.Repository.PostRepository;
 import com.example.blogapp.config.AppConst;
+import com.example.blogapp.entities.Comment;
 import com.example.blogapp.response.ApiResponse;
 import com.example.blogapp.serviveImplementation.CategoryServiceImp;
 import com.example.blogapp.serviveImplementation.PostServiceImp;
@@ -15,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/")
@@ -59,10 +58,10 @@ public class PostController {
     // getAllPost
     @GetMapping("/allPost")
     public ResponseEntity<PostResponse> getAllPost(
-            @RequestParam(value = "pageNumber", defaultValue = AppConst.PAGE_NUMBER, required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = AppConst.PAGE_SIZE, required = false) Integer pageSize,
-            @RequestParam(value = "sortBy", defaultValue = AppConst.SORT_BY, required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = AppConst.SORT_DIR, required = false) String sortDir) {
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
 
         PostResponse postResponse = postServiceImp.allPost(pageNumber, pageSize,sortBy,sortDir);
         return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
@@ -72,6 +71,13 @@ public class PostController {
     @GetMapping("/posts/{postId}")
     public ResponseEntity<PostDto> getPostById(@PathVariable Integer postId) {
         PostDto postDto = this.postServiceImp.getPostById(postId);
+        Set<CommentDto> comment = postDto.getComments();
+       // Set<Comment> com = post.getCom();
+
+        System.out.println("sakk");
+        for(CommentDto c:comment) {
+            System.out.println(c.getContent().length());
+        }
         return new ResponseEntity<PostDto>(postDto, HttpStatus.OK);
     }
     //delete post{
