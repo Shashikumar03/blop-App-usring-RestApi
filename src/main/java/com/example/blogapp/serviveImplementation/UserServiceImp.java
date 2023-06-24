@@ -1,12 +1,16 @@
 package com.example.blogapp.serviveImplementation;
 
 import com.example.blogapp.Dto.UserDto;
+import com.example.blogapp.Repository.RoleRepository;
 import com.example.blogapp.Repository.UserRepository;
+import com.example.blogapp.config.AppConst;
+import com.example.blogapp.entities.Role;
 import com.example.blogapp.entities.User;
 import com.example.blogapp.exception.ResourceNotFoundException;
 import com.example.blogapp.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,13 +20,32 @@ import java.util.List;
 public class UserServiceImp implements UserService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Override
+    public UserDto registerNewUser(UserDto userDto) {
+        User user = modelMapper.map(userDto, User.class);
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+
+        //giving roles
+        Role role = this.roleRepository.findById(AppConst.Normal_USER).get();
+        user.getRoles().add(role);
+        User user1 = this.userRepository.save(user);
+        UserDto userDto1 = modelMapper.map(user, UserDto.class);
+
+        return userDto1;
+    }
 
     @Override
     public UserDto createUser(UserDto userDto) {
         User user = this.dtoToUser(userDto);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         User saveUser = userRepository.save(user);
         return userToDto(saveUser);
 
