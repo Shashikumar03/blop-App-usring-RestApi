@@ -37,7 +37,6 @@ public class SecurityConfig {
             "/swagger-resources/**", "/swagger-ui/**", "/webjars/**"
 
     };
-
     @Autowired
     private CustomUserDetailService customUserDetailService;
 
@@ -59,7 +58,7 @@ public class SecurityConfig {
                 .permitAll()
                 .requestMatchers(HttpMethod.GET)
                 .permitAll()
-                //.requestMatchers(HttpMethod.POST).permitAll()
+               // .requestMatchers(HttpMethod.POST).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and().exceptionHandling()

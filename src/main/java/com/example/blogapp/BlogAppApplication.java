@@ -3,6 +3,10 @@ package com.example.blogapp;
 import com.example.blogapp.Repository.RoleRepository;
 import com.example.blogapp.config.AppConst;
 import com.example.blogapp.entities.Role;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -10,10 +14,18 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+//import springfox.documentation.oas.annotations.EnableOpenApi;
 
 import java.util.List;
 
+
 @SpringBootApplication
+@OpenAPIDefinition(info = @Info(title = "Employees API",
+        version = "2.0",
+        description = "Employees Information",
+        termsOfService = "terms",
+        contact = @Contact(name = "shashi kumar",email = "shashi@gmail.com"),
+        license = @License(name = "licence",url = "st.com")))
 public class BlogAppApplication  implements CommandLineRunner {
 
     @Autowired
