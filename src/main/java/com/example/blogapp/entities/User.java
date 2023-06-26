@@ -24,7 +24,8 @@ public class User implements UserDetails {
     private Integer id;
     private  String name;
 
-    @Email(message = " email already present")
+    @Column(unique = true)
+
     private String email;
     private String password;
     private String about;

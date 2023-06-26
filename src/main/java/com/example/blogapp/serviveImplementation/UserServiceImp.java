@@ -6,17 +6,27 @@ import com.example.blogapp.Repository.UserRepository;
 import com.example.blogapp.config.AppConst;
 import com.example.blogapp.entities.Role;
 import com.example.blogapp.entities.User;
+import com.example.blogapp.exception.ApiException;
+import com.example.blogapp.exception.GlobalExceptionHandler;
 import com.example.blogapp.exception.ResourceNotFoundException;
 import com.example.blogapp.service.UserService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.nio.channels.AlreadyBoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
+@Validated
 public class UserServiceImp implements UserService {
     @Autowired
     UserRepository userRepository;
@@ -27,9 +37,21 @@ public class UserServiceImp implements UserService {
     private ModelMapper modelMapper;
     @Autowired
     private RoleRepository roleRepository;
+    private final Validator validator;
+    public UserServiceImp(Validator validator) {
+        this.validator = validator;
+    }
+
     @Override
     public UserDto registerNewUser(UserDto userDto) {
+        String email="";
         User user = modelMapper.map(userDto, User.class);
+            email = user.getEmail();
+            Boolean exist = userRepository.existsByEmail(email);
+            if(exist){
+                throw new ResourceNotFoundException("emsll","hjh",1);
+            }
+
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 
         //giving roles
@@ -45,8 +67,13 @@ public class UserServiceImp implements UserService {
     public UserDto createUser(UserDto userDto) {
         User user = this.dtoToUser(userDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User saveUser=null;
+        try{
+            saveUser=userRepository.save(user);
+        }catch (Exception e){
+            throw  new ApiException("email is already prented");
+        }
 
-        User saveUser = userRepository.save(user);
         return userToDto(saveUser);
 
     }
