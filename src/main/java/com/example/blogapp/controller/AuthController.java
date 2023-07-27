@@ -8,6 +8,7 @@ import com.example.blogapp.entities.User;
 import com.example.blogapp.exception.ApiException;
 import com.example.blogapp.security.JwtTokenHelper;
 import com.example.blogapp.serviveImplementation.UserServiceImp;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -59,7 +60,7 @@ public class AuthController {
     }
     //register new user
   @PostMapping("/register")
-  public  ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto){
+  public  ResponseEntity<UserDto> registerUser(@Valid @RequestBody UserDto userDto){
     UserDto registerUserDto = this.userServiceImp.registerNewUser(userDto);
     return  new ResponseEntity<UserDto>(registerUserDto, HttpStatus.CREATED);
   }

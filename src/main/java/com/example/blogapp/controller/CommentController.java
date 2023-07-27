@@ -21,7 +21,7 @@ public class CommentController {
         return new ResponseEntity<CommentDto>(comment, HttpStatus.CREATED);
 
     }
-    @DeleteMapping("//comments/{commentId}")
+    @DeleteMapping("/comments/{commentId}")
     public ApiResponse deleteComment(@PathVariable Integer commentId){
         this.commentServiceImp.deleteComment(commentId);
         return  new ApiResponse("deleted", true);
@@ -29,7 +29,6 @@ public class CommentController {
     }
     @GetMapping("/allComments")
     public ResponseEntity<List<CommentDto>> getAllComment(){
-        System.out.println("bff");
         List<CommentDto> allComment = this.commentServiceImp.getAllComment();
         return new ResponseEntity<List<CommentDto>>(allComment, HttpStatus.OK);
     }

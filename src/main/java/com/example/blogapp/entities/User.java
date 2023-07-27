@@ -2,6 +2,7 @@ package com.example.blogapp.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,10 +23,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Integer id;
+    @NonNull
+    @NotEmpty(message = "name likho")
     private  String name;
 
     @Column(unique = true)
-
     private String email;
     private String password;
     private String about;

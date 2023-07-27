@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+//import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,7 +33,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    public static final String[] PUBLIC_URLS = {"/api/v1/auth/**", "/v3/api-docs", "/v2/api-docs",
+    public static final String[] PUBLIC_URLS = {"/api/v1/auth/**","/api/users/", "/v3/api-docs", "/v2/api-docs",
             "/swagger-resources/**", "/swagger-ui/**", "/webjars/**"
 
     };
@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .permitAll()
                 .requestMatchers(HttpMethod.GET)
                 .permitAll()
-                .requestMatchers(HttpMethod.POST).permitAll()
+               // .requestMatchers(HttpMethod.POST).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and().exceptionHandling()
@@ -166,7 +166,7 @@ public class SecurityConfig {
 
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
 
-        bean.setOrder(-110);
+      //  bean.setOrder(-110);
 
         return bean;
     }
