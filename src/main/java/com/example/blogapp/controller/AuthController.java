@@ -54,8 +54,8 @@ public class AuthController {
       try{
         this.authenticationManager.authenticate(authenticationToken);
       }catch (BadCredentialsException e){
-        System.out.println(e);
-        throw new ApiException("invalid user name ");
+          System.out.println(e);
+        throw new ApiException("password is incorrect");
       }
     }
     //register new user
